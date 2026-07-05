@@ -6,6 +6,7 @@ module com.pmrs {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires org.junit.jupiter.api;
+    requires java.logging;
 
     opens com.pmrs to javafx.fxml;
     exports com.pmrs;
