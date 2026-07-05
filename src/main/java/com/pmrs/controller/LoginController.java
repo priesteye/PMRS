@@ -3,6 +3,11 @@ package com.pmrs.controller;
 
 import com.pmrs.exception.PMRSException;
 import com.pmrs.exception.ValidationException;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,29 +17,61 @@ import java.util.logging.Logger;
 public class LoginController {
     private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
 
-    // @FXML private TextField usernameField;
-    // @FXML private PasswordField passwordField;
-    // @FXML private Label inlineErrorLabel;
+    // --- FXML Bindings ---
+     @FXML private TextField usernameField;
+     @FXML private PasswordField passwordField;
+     @FXML private Label inlineErrorLabel;
 
+    /**
+     * Called automatically by JavaFX after the FXML is loaded.
+     */
+    @FXML
+    public void initialize() {
+        // Ensure the error label is cleared on startup
+        inlineErrorLabel.setText("");
+    }
+
+    /**
+     * Triggered by the "Sign In" button (onAction="#handleLogin").
+     */
+    @FXML
     public void handleLogin() {
-        try {
-            // String username = usernameField.getText();
-            // String password = passwordField.getText();
+        // 1. Reset error state on new attempt
+        inlineErrorLabel.setText("");
+        inlineErrorLabel.setStyle("-fx-text-fill: #d32f2f;"); // Reset to error red
 
+        try {
+             String username = usernameField.getText();
+             String password = passwordField.getText();
+
+            // 2. Client-side input validation
+            if (username == null || username.trim().isEmpty()) {
+                throw new ValidationException("System ID is required.");
+            }
+            if (password == null || password.trim().isEmpty()) {
+                throw new ValidationException("Password is required.");
+            }
+
+            // 3. Authentication Seam (To be wired to AuthService)
             // Stub: We don't have an AuthService yet per spec, but we will call it here.
             // Person loggedInUser = authService.authenticate(username, password);
 
-            // Polymorphic routing per Section 4
-            // String dashboardFxml = loggedInUser.getDashboardView();
-            // SceneNavigator.navigate(dashboardFxml);
+            // Polymorphic routing per Section 4 (To be wired to SceneNavigator)
+            // String dashboardView = loggedInUser.getDashboardView();
+            // SceneNavigator.navigate(dashboardView);
 
+            // Temporary success state for build/compile phase
+            inlineErrorLabel.setStyle("-fx-text-fill: #2e7d32;"); // Success green
+            inlineErrorLabel.setText("Login accepted. Routing to dashboard...");
         } catch (ValidationException e) {
             // Handled expected validation failures (e.g., empty fields, bad credentials)
             LOGGER.log(Level.WARNING, "Login validation failed: {0}", e.getMessage());
-            // Stub: inlineErrorLabel.setText(e.getMessage());
+             inlineErrorLabel.setText(e.getMessage());
         } catch (Exception e) {
+            // Unhandled/Unexpected system failure
             LOGGER.log(Level.SEVERE, "Unexpected error during login.", e);
-            // Stub: Show non-blocking styled error dialog
+            // Show non-blocking styled error dialog
+            inlineErrorLabel.setText("System error occurred. Please check logs.");
         }
     }
 }
