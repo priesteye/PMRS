@@ -1,12 +1,8 @@
 // src/main/java/com/pmrs/controller/PatientDetailController.java
 package com.pmrs.controller;
 
-import com.pmrs.exception.PMRSException;
 import com.pmrs.exception.ValidationException;
-import com.pmrs.model.Address;
-import com.pmrs.model.Appointment;
-import com.pmrs.model.MedicalRecord;
-import com.pmrs.model.Patient;
+import com.pmrs.model.*;
 import com.pmrs.model.enums.BloodType;
 import com.pmrs.model.enums.Gender;
 import com.pmrs.service.PatientService;
@@ -16,15 +12,8 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +26,9 @@ public class PatientDetailController {
 
     private PatientService patientService;
     private Patient currentPatient;
+
+    // --- Form Bindings (This is the field your compiler was looking for) ---
+    @FXML private ComboBox<Patient> patientComboBox;
 
     // --- Header Bindings ---
     @FXML private Label headerNameLabel;
@@ -199,7 +191,7 @@ public class PatientDetailController {
 
             // 4. Persist
             // NOTE: Ensure PatientService.updatePatient(Patient p) exists and wraps repository.update()
-            // patientService.updatePatient(currentPatient);
+             patientService.updatePatient(currentPatient);
 
             // Re-sync header
             headerNameLabel.setText(currentPatient.getFirstName() + " " + currentPatient.getLastName());
@@ -226,20 +218,39 @@ public class PatientDetailController {
     @FXML
     public void handleAddMedicalRecord(ActionEvent event) {
         try {
-            // SceneNavigator.loadMedicalRecordForm(currentPatient);
             LOGGER.info("Routing to Medical Record form for: " + currentPatient.getId());
+            // SceneNavigator.loadMedicalRecordForm(currentPatient);
+
+            // Route to form and inject the patient context
+            SceneNavigator.loadCenterNode("/com/pmrs/view/medical-record.fxml", controller -> {
+                ((MedicalRecordController) controller).initData(currentPatient);
+            });
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to load medical record form.", e);
+            showGlobalError("System Error: Could not open the medical record form.");
         }
     }
 
     @FXML
     public void handleScheduleAppointment(ActionEvent event) {
         try {
-            // SceneNavigator.loadAppointmentScheduler(currentPatient);
             LOGGER.info("Routing to Appointment Scheduler for: " + currentPatient.getId());
+            // SceneNavigator.loadAppointmentScheduler(currentPatient);
+
+            // Route to scheduler, trigger data load, and auto-select this patient
+            SceneNavigator.loadCenterNode(
+                    "/com/pmrs/view/appointment-scheduler.fxml",
+                    controller -> {
+                        AppointmentSchedulerController scheduler = (AppointmentSchedulerController) controller;
+                        // 1. We must populate the dropdowns first
+                        scheduler.loadInitialData();
+                        // 2. Then we tell it to pre-select the patient we are currently viewing
+                        scheduler.preSelectPatient(currentPatient);
+                    }
+            );
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to load appointment scheduler.", e);
+            showGlobalError("System Error: Could not open the appointment scheduler.");
         }
     }
 

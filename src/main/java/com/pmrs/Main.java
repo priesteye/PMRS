@@ -2,16 +2,16 @@
 package com.pmrs;
 
 import com.pmrs.controller.*;
-import com.pmrs.model.Appointment;
-import com.pmrs.model.MedicalRecord;
-import com.pmrs.model.Patient;
-import com.pmrs.model.Physician;
+import com.pmrs.model.*;
+import com.pmrs.model.enums.Gender;
 import com.pmrs.repository.*;
 import com.pmrs.service.*;
 import com.pmrs.util.SceneNavigator;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 /**
  * PMRS Application Entry Point.
@@ -28,19 +28,32 @@ public class Main extends Application {
         Repository<Appointment> apptRepo = new InMemoryAppointmentRepository();
         Repository<MedicalRecord> recordRepo = new InMemoryMedicalRecordRepository();
         Repository<Physician> physicianRepo = new InMemoryPhysicianRepository();
+        Repository<Credentials> credRepo = new InMemoryCredentialRepository();
 
         // 2. Initialize Business Logic Services
         ValidationService validationService = new ValidationService();
         PatientService patientService = new PatientService(patientRepo);
         AppointmentService appointmentService = new AppointmentService(apptRepo, patientRepo);
         MedicalRecordService recordService = new MedicalRecordService(recordRepo, patientRepo);
+        AuthService authService = new AuthService(credRepo);
+
+        // Seed Data for Testing
+        Physician adminDoc = new Physician("DOC-001", "Gregory", "House",
+                LocalDate.of(1959, 6, 11),
+                Gender.MALE, "555-1234", new Address("1 Princeton Way",
+                "Princeton", "NJ", "08540"), "Diagnostics",
+                "LIC-999");
+        physicianRepo.add(adminDoc);
+        credRepo.add(new Credentials("admin", "password123", adminDoc));
 
         // 3. Configure Manual Dependency Injection Factory
         // The SceneNavigator uses this to build controllers and inject the required services.
         SceneNavigator.initialize(primaryStage, type -> {
             try {
                 if (type == LoginController.class) {
-                    return new LoginController(); // Add AuthService injection here in future
+                    LoginController c = new LoginController();
+                    c.setAuthService(authService); // Make sure you add this setter to LoginController
+                    return c;
                 }
                 if (type == MainLayoutController.class) {
                     return new MainLayoutController();

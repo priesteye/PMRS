@@ -179,7 +179,7 @@ public class MedicalRecordController {
              );
 
             // 3. Attach any prescriptions built up in the temporary table
-            newRecord.setPrescriptions(new ArrayList<>(currentPrescriptions));
+            record.setPrescriptions(new ArrayList<>(currentPrescriptions));
 
             // 4. Persist
              medicalRecordService.addMedicalRecord(record);
@@ -222,7 +222,8 @@ public class MedicalRecordController {
     public void handleBack(ActionEvent event) {
         try {
             // Returns to Patient Detail View and passes the context patient back
-            // SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml", controller -> ((PatientDetailController) controller).initData(contextPatient));
+            SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml",
+                    controller -> ((PatientDetailController) controller).initData(contextPatient));
             LOGGER.info("Returning to patient detail view.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to navigate back.", e);

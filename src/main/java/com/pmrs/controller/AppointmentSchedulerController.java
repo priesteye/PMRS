@@ -11,6 +11,7 @@ import com.pmrs.service.AppointmentService;
 import com.pmrs.service.PatientService;
 import com.pmrs.service.ValidationService;
 import com.pmrs.repository.Repository; // Used to fetch Physicians directly until a PhysicianService is built
+import com.pmrs.util.DateUtil;
 import com.pmrs.util.IdGenerator;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -102,7 +103,7 @@ public class AppointmentSchedulerController {
         });
 
         // 3. Setup Table Columns
-        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter dtFormatter = DateUtil.STANDARD_DATETIME;
         colApptId.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getId()));
         colPatient.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getPatientId()));
         colPhysician.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getPhysicianId()));
@@ -261,4 +262,21 @@ public class AppointmentSchedulerController {
         globalMessageLabel.setText(message);
     }
 
+    /**
+     * Pre-selects a specific patient in the ComboBox.
+     * Used when navigating directly from the Patient Detail view.
+     * @param patient The patient to select.
+     */
+    public void preSelectPatient(Patient patient) {
+        if (patient == null || patientComboBox.getItems().isEmpty()) {
+            return;
+        }
+
+        for (Patient p : patientComboBox.getItems()) {
+            if (p.getId().equals(patient.getId())) {
+                patientComboBox.getSelectionModel().select(p);
+                break;
+            }
+        }
+    }
 }

@@ -68,6 +68,27 @@ public class SceneNavigator {
         invokeLifecycleMethods(controller);
     }
 
+    /**
+     * Injects a view into the center area and allows passing a data payload to the controller.
+     */
+    public static void loadCenterNode(String fxmlPath, java.util.function.Consumer<Object> initData) throws IOException {
+        if (centerContentArea == null) throw new IllegalStateException("Center area not initialized.");
+
+        FXMLLoader loader = new FXMLLoader(SceneNavigator.class.getResource(fxmlPath));
+        loader.setControllerFactory(controllerFactory);
+        Parent node = loader.load();
+
+        centerContentArea.getChildren().clear();
+        centerContentArea.getChildren().add(node);
+
+        Object controller = loader.getController();
+        if (initData != null) {
+            initData.accept(controller);
+        } else {
+            invokeLifecycleMethods(controller);
+        }
+    }
+
     private static void invokeLifecycleMethods(Object controller) {
         if (controller instanceof com.pmrs.controller.DashboardController) {
             ((com.pmrs.controller.DashboardController) controller).loadDashboardData();

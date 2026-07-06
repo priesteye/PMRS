@@ -1,8 +1,11 @@
 // src/main/java/com/pmrs/controller/LoginController.java
 package com.pmrs.controller;
 
-import com.pmrs.exception.PMRSException;
 import com.pmrs.exception.ValidationException;
+import com.pmrs.model.Person;
+import com.pmrs.service.AuthService;
+import com.pmrs.util.SceneNavigator;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -17,10 +20,20 @@ import java.util.logging.Logger;
 public class LoginController {
     private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
 
+    private AuthService authService;
+
     // --- FXML Bindings ---
      @FXML private TextField usernameField;
      @FXML private PasswordField passwordField;
      @FXML private Label inlineErrorLabel;
+
+    /**
+     * Injects the authentication service.
+     * Called manually by the SceneNavigator ControllerFactory during bootstrap.
+     */
+    public void setAuthService(AuthService authService) {
+        this.authService = authService;
+    }
 
     /**
      * Called automatically by JavaFX after the FXML is loaded.
@@ -40,6 +53,11 @@ public class LoginController {
         inlineErrorLabel.setText("");
         inlineErrorLabel.setStyle("-fx-text-fill: #d32f2f;"); // Reset to error red
 
+        if (authService == null) {
+            inlineErrorLabel.setText("System Error: Auth Service not initialized.");
+            return;
+        }
+
         try {
              String username = usernameField.getText();
              String password = passwordField.getText();
@@ -53,12 +71,15 @@ public class LoginController {
             }
 
             // 3. Authentication Seam (To be wired to AuthService)
-            // Stub: We don't have an AuthService yet per spec, but we will call it here.
-            // Person loggedInUser = authService.authenticate(username, password);
+            // Authenticate against the seeded in-memory store
+             Person loggedInUser = authService.authenticate(username, password);
 
-            // Polymorphic routing per Section 4 (To be wired to SceneNavigator)
-            // String dashboardView = loggedInUser.getDashboardView();
-            // SceneNavigator.navigate(dashboardView);
+            // Polymorphic routing (To be wired to SceneNavigator)
+             SceneNavigator.loadRootScene("/com/pmrs/view/main-layout.fxml"); // Load shell first
+            // Then inject the role-specific dashboard into the center of that shell
+            // Passing 'null' because the dashboard doesn't require a data payload initialization
+             String dashboardView = loggedInUser.getDashboardView();
+             SceneNavigator.loadCenterNode(dashboardView, null); // Then inject their specific dashboard
 
             // Temporary success state for build/compile phase
             inlineErrorLabel.setStyle("-fx-text-fill: #2e7d32;"); // Success green

@@ -1,7 +1,6 @@
 // src/main/java/com/pmrs/controller/DashboardController.java
 package com.pmrs.controller;
 
-import com.pmrs.exception.PMRSException;
 import com.pmrs.model.Appointment;
 import com.pmrs.service.AppointmentService;
 import com.pmrs.service.PatientService;

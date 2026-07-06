@@ -144,10 +144,16 @@ public class PatientListController {
         }
     }
 
+    /**
+     * Handles the double-click event on the patient table, routing the user
+     * to the detailed view for the selected patient.
+     * @param patient The patient selected from the TableView.
+     */
     private void openPatientDetail(Patient patient) {
         try {
             // Note: This relies on SceneNavigator being built next to accept a controller callback
-            // e.g., SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml", controller -> ((PatientDetailController) controller).initData(patient));
+             SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml",
+                     controller -> ((PatientDetailController) controller).initData(patient));
             LOGGER.info("Opening detail view for patient: " + patient.getId());
 
             // Stub implementation for context passing until SceneNavigator is fully written:
@@ -164,7 +170,7 @@ public class PatientListController {
         errorMessageLabel.setText(message);
     }
 
-    public void onPatientDoubleClicked(Patient selectedPatient) {
-        // Stub: SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml", selectedPatient);
-    }
+//    public void onPatientDoubleClicked(Patient selectedPatient) {
+//        // Stub: SceneNavigator.loadCenterNode("/com/pmrs/view/patient-detail.fxml", selectedPatient);
+//    }
 }
