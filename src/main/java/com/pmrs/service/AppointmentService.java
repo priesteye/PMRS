@@ -24,6 +24,15 @@ public class AppointmentService {
     }
 
     /**
+     * Retrieves all appointments in the system.
+     * Useful for dashboard aggregations and global calendar views.
+     * * @return A list of all appointments.
+     */
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
+
+    /**
      * Schedules a new appointment, strictly enforcing a no double-booking rule.
      * Also links the appointment to the patient's record.
      * * @param appointment The newly requested appointment.
