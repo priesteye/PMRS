@@ -30,6 +30,18 @@ public class PatientService {
         patientRepository.add(patient);
     }
 
+    /**
+     * Updates an existing patient's record in the system.
+     * * @param patient The updated patient model.
+     * @throws PMRSException if the patient cannot be found or a repository error occurs.
+     */
+    public void updatePatient(Patient patient) throws PMRSException {
+        if (patient == null || patient.getId() == null) {
+            throw new PMRSException("Cannot update a null patient or a patient without an ID.");
+        }
+        patientRepository.update(patient);
+    }
+
     public Patient getPatient(String id) throws PMRSException {
         return patientRepository.findById(id);
     }
