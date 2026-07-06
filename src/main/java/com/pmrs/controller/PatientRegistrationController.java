@@ -64,6 +64,9 @@ public class PatientRegistrationController {
         this.validationService = validationService;
     }
 
+    /**
+     * Called automatically by JavaFX after the FXML is loaded.
+     */
     @FXML
     public void initialize() {
         // Populate dropdowns with enum values

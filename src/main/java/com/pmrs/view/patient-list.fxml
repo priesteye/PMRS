@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="700.0" prefWidth="900.0" spacing="20.0"
+      stylesheets="@../css/application.css"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.pmrs.controller.PatientListController">
+
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <VBox spacing="5.0">
+        <Label styleClass="page-header" text="Patient Directory" textFill="#2c3e50">
+            <font>
+                <Font name="System Bold" size="28.0" />
+            </font>
+        </Label>
+        <Label text="Search, filter, and double-click a row to view patient details." textFill="#7f8c8d" />
+        <Label fx:id="errorMessageLabel" textFill="#d32f2f" wrapText="true" />
+    </VBox>
+
+    <VBox spacing="10.0" styleClass="card-pane">
+        <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        </padding>
+
+        <Label text="Advanced Search" textFill="#34495e">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <TextField fx:id="searchQueryField" prefWidth="200.0" promptText="Search Name or ID..." />
+
+            <ComboBox fx:id="bloodTypeFilter" prefWidth="130.0" promptText="Blood Type" />
+
+            <DatePicker fx:id="dobFromPicker" prefWidth="130.0" promptText="DOB From" />
+            <DatePicker fx:id="dobToPicker" prefWidth="130.0" promptText="DOB To" />
+
+            <Button mnemonicParsing="false" onAction="#handleSearch"
+                    styleClass="primary-button" text="Search" />
+            <Button mnemonicParsing="false" onAction="#handleClearFilters"
+                    styleClass="secondary-button" text="Clear" />
+        </HBox>
+    </VBox>
+
+    <TableView fx:id="patientTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" prefWidth="100.0" text="Patient ID" />
+            <TableColumn fx:id="colFirstName" prefWidth="150.0" text="First Name" />
+            <TableColumn fx:id="colLastName" prefWidth="150.0" text="Last Name" />
+            <TableColumn fx:id="colDob" prefWidth="120.0" text="Date of Birth" />
+            <TableColumn fx:id="colGender" prefWidth="100.0" text="Gender" />
+            <TableColumn fx:id="colContact" prefWidth="150.0" text="Contact Number" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
+</VBox>
