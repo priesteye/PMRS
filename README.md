@@ -10,14 +10,21 @@ The domain models are strictly encapsulated (using checked `ValidationException`
 
 ## Build and Run Instructions
 
-This project requires **Java 17+** and **Maven**.
+This project requires **Java 17+** and **Maven** to be installed on your system.
 
 1. Clone or extract the source directory.
 2. Open a terminal in the root directory of the project (where `pom.xml` is located).
 3. Compile and launch the application by running:
    ```bash
    mvn clean javafx:run
-   
+   ``` 
+## Unit Test
+
+To execute the unit tests (which verify the scheduling constraints and polymorphic search logic), run:
+```aiignore
+   mvn test
+```
+
 ## Test Credentials
 The system boots with a seeded in-memory credential store. To access the Physician dashboard, use the following login:
 ``` 
