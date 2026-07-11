@@ -1,6 +1,7 @@
 // src/test/java/com/pmrs/service/PatientServiceTest.java
 package com.pmrs.service;
 
+import com.pmrs.exception.DuplicatePatientException;
 import com.pmrs.exception.PMRSException;
 import com.pmrs.model.Address;
 import com.pmrs.model.Patient;
@@ -13,7 +14,10 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 class PatientServiceTest {
 
@@ -64,5 +68,30 @@ class PatientServiceTest {
 
         List<Patient> results = patientService.search(from, to);
         assertEquals(2, results.size());
+    }
+
+
+    @Test
+    void testRegisterPatient_sameNameAndDob_throwsDuplicatePatientException() throws PMRSException {
+        Address dummyAddress = new Address("123 Main", "City", "State", "12345");
+
+        // Same first name, last name, and DOB as PT-001 (John Doe), but a different
+        // generated ID — this is exactly the case the ID-only repository check misses.
+        Patient duplicate = new Patient("PT-999", "John", "Doe", LocalDate.of(1980, 1, 1),
+                Gender.MALE, "555-9999", dummyAddress, BloodType.A_POS, "Someone Else");
+
+        assertThrows(DuplicatePatientException.class,
+                () -> patientService.registerPatient(duplicate));
+    }
+
+    @Test
+    void testRegisterPatient_sameNameDifferentDob_doesNotThrow() throws PMRSException {
+        Address dummyAddress = new Address("123 Main", "City", "State", "12345");
+
+        // Same name as PT-001 (John Doe) but a different date of birth: a different person.
+        Patient differentPerson = new Patient("PT-998", "John", "Doe", LocalDate.of(2001, 3, 10),
+                Gender.MALE, "555-8888", dummyAddress, BloodType.B_POS, "Someone Else");
+
+        assertDoesNotThrow(() -> patientService.registerPatient(differentPerson));
     }
 }

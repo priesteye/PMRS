@@ -10,7 +10,7 @@ import com.pmrs.model.enums.AppointmentStatus;
 import com.pmrs.service.AppointmentService;
 import com.pmrs.service.PatientService;
 import com.pmrs.service.ValidationService;
-import com.pmrs.repository.Repository; // Used to fetch Physicians directly until a PhysicianService is built
+import com.pmrs.repository.Repository;
 import com.pmrs.util.DateUtil;
 import com.pmrs.util.IdGenerator;
 

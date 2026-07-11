@@ -1,6 +1,7 @@
 // src/main/java/com/pmrs/service/PatientService.java
 package com.pmrs.service;
 
+import com.pmrs.exception.DuplicatePatientException;
 import com.pmrs.exception.PMRSException;
 import com.pmrs.model.Patient;
 import com.pmrs.model.enums.BloodType;
@@ -24,9 +25,23 @@ public class PatientService {
     /**
      * Registers a new patient in the system.
      * * @param patient The validated patient model.
+     *  @throws DuplicatePatientException if a patient with the same first name,
+     *          last name, and date of birth is already registered.
      * @throws PMRSException if a system or duplicate error occurs.
      */
     public void registerPatient(Patient patient) throws PMRSException {
+        boolean alreadyRegistered = patientRepository.findAll().stream()
+                .anyMatch(existing ->
+                        existing.getFirstName().equalsIgnoreCase(patient.getFirstName())
+                                && existing.getLastName().equalsIgnoreCase(patient.getLastName())
+                                && existing.getDateOfBirth().equals(patient.getDateOfBirth()));
+
+        if (alreadyRegistered) {
+            throw new DuplicatePatientException(
+                    "A patient named " + patient.getFirstName() + " " + patient.getLastName()
+                            + " with date of birth " + patient.getDateOfBirth() + " is already registered.");
+        }
+
         patientRepository.add(patient);
     }
 
