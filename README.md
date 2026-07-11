@@ -2,6 +2,46 @@
 
 A self-contained, desktop-based patient management system built with JavaFX. This application provides a clinical interface for registering patients, scheduling appointments, and managing medical records.
 
+## Screenshots
+
+![]
+![PMRS secure login screen](docs/screenshots/login.png)
+
+![Clinic dashboard with patient and appointment counts](docs/screenshots/dashboard.png)
+
+![Patient registration form showing a DOB cannot be future inline validation error](docs/screenshots/patient-registration-error.png)
+
+![Patient registration form showing a successful registration confirmation with generated patient ID](docs/screenshots/patient-registration-success.png)
+
+## Demo
+
+
+<summary>Full application walkthrough </summary>
+
+![Full PMRS workflow demo: login, dashboard, patient registration, and scheduling](docs/screenshots/demo-full-workflow.gif)
+
+
+<details>
+<summary>Patient registration (click to expand)</summary>
+
+![Patient registration walkthrough with inline field validation](docs/screenshots/demo-patient-registration.gif)
+
+</details>
+
+<details>
+<summary>Patient directory search (click to expand)</summary>
+
+![Patient directory live search and filtering](docs/screenshots/demo-patient-search.gif)
+
+</details>
+
+<details>
+<summary>Appointment scheduling (click to expand)</summary>
+
+![Appointment scheduling with conflict detection](docs/screenshots/demo-appointment-scheduling.gif)
+
+</details>
+
 ## Architecture Overview
 
 PMRS strictly adheres to the Model-View-Controller (MVC) architectural pattern. The system is designed with a clear separation of concerns, heavily utilizing polymorphism and encapsulation.
